@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+    
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Zebra_RFID_Scanner_Android.Views.ExcelDetailPage"
+             Title="{Binding Url}"
+           >
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Save" Command="{Binding SaveDataClicked}" />
+    </ContentPage.ToolbarItems>
+    <StackLayout Padding="5">
+        <Label Text="READ DATA" HorizontalOptions="Center" FontSize="Large" Margin="0,5,0,0" />
+        <Grid BackgroundColor="White" RowSpacing="0" HeightRequest="150" IsVisible="{Binding listCsv}">
+            <Grid.RowDefinitions >
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions >
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Label Text="CTN" Grid.Row="0" Grid.Column="0" HorizontalOptions="StartAndExpand"/>
+            <Label Text="PO" Grid.Row="0" Grid.Column="1" HorizontalOptions="EndAndExpand"/>
+            <Label Text="QTY" Grid.Row="0" Grid.Column="2" HorizontalOptions="EndAndExpand"/>
+            <Label Text="QTY SCAN" Grid.Row="0" Grid.Column="3" HorizontalOptions="EndAndExpand"/>
+            <ListView x:Name="excelListView" Grid.Row="1" Grid.ColumnSpan="4" ItemsSource="{Binding ExcelRowShow}" HasUnevenRows="True">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <ViewCell.View>
+                                <Frame BackgroundColor="{Binding Color}" Padding="5" >
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label Text="{Binding CartonTo}" HorizontalOptions="StartAndExpand" />
+                                        <Label Text="{Binding PO}" HorizontalOptions="CenterAndExpand" />
+                                        <Label Text="{Binding Qty}" HorizontalOptions="CenterAndExpand" />
+                                        <Label Text="{Binding qtyscan}" HorizontalOptions="EndAndExpand" />
+                                    </StackLayout>
+                                </Frame>
+                            </ViewCell.View>
+                        </ViewCell>
+             
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <BoxView Color="Gray" Grid.Row="1" Grid.ColumnSpan="3" HeightRequest="2" HorizontalOptions="FillAndExpand" VerticalOptions="Start" />
+        </Grid>
+        <Grid BackgroundColor="White" RowSpacing="0" HeightRequest="150" IsVisible="{Binding listExcel}">
+            <Grid.RowDefinitions >
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions >
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Label Text="UPC" Grid.Row="0" Grid.Column="0" HorizontalOptions="StartAndExpand"/>
+            <Label Text="QTY" Grid.Row="0" Grid.Column="1" HorizontalOptions="EndAndExpand"/>
+            <Label Text="QTY SCAN" Grid.Row="0" Grid.Column="2" HorizontalOptions="EndAndExpand"/>
+            <ListView x:Name="excelListView1" Grid.Row="1" Grid.ColumnSpan="3" ItemsSource="{Binding ExcelRow}" HasUnevenRows="True">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <ViewCell.View>
+                                <Frame BackgroundColor="{Binding Color}" Padding="5">
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label Text="{Binding UPC}" HorizontalOptions="StartAndExpand" />
+                                        <Label Text="{Binding Qty}" HorizontalOptions="CenterAndExpand" />
+                                        <Label Text="{Binding qtyscan}" HorizontalOptions="EndAndExpand" />
+                                    </StackLayout>
+                                </Frame>
+                            </ViewCell.View>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <BoxView Color="Gray" Grid.Row="1" Grid.ColumnSpan="3" HeightRequest="2" HorizontalOptions="FillAndExpand" VerticalOptions="Start" />
+        </Grid>
+        <!-- Place new controls here -->
+        <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand" Spacing="0" CompressedLayout.IsHeadless="true">
+            <StackLayout Orientation="Horizontal" BackgroundColor="#cccccc" Padding="5,5,5,0" Margin="0">
+                <Label Text="UNIQUE" FontSize="Micro"/>
+                <Label Text="TOTAL" FontSize="Micro" HorizontalOptions="CenterAndExpand" Margin="0,0,70,0"/>
+                <Label Text="TIME" FontSize="Micro" HorizontalOptions="End"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal" BackgroundColor="#cccccc" Padding="5" Margin="0">
+                <Label Text="{Binding UniqueTags}" FontSize="Medium" TextColor="Accent"/>
+                <Label Text="{Binding TotalTags}" FontSize="Medium" TextColor="Accent" HorizontalOptions="CenterAndExpand"/>
+                <Label Text="{Binding TotalTime}" FontSize="Medium" TextColor="Accent" HorizontalOptions="End"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal" BackgroundColor="#cccccc" Spacing="10" Padding="5">
+                <Label Text="ID"/>
+                <Label Text="RSSI" HorizontalOptions="EndAndExpand"/>
+                <Label Text="COUNT" HorizontalOptions="End"/>
+            </StackLayout>
+            <ListView VerticalOptions="FillAndExpand" HasUnevenRows="True" ItemsSource="{Binding AllItems}" SelectedItem="{Binding MySelectedItem, Mode=TwoWay}" 
+              BackgroundColor="Transparent" IsVisible="{Binding listAvailable}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Padding="5">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="230" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Label Text="{Binding InvID}" Grid.Row="0" Grid.Column="0"/>
+                                <Label Text="{Binding RSSI}" Grid.Row="0" Grid.Column="1" />
+                                <Label Text="{Binding TagCount}" Grid.Row="0" Grid.Column="2" />
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <StackLayout Orientation="Vertical" Spacing="10" Padding="5" VerticalOptions="CenterAndExpand" HorizontalOptions="Center" IsVisible="{Binding hintAvailable}">
+                <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+                    <Label Text="Reader: "/>
+                    <Label Text="{Binding readerConnection}" TextColor="Accent"/>
+                </StackLayout>
+                <Label Text="{Binding readerStatus}" IsVisible="{Binding isConnected}"/>
+            </StackLayout>
+
+        </StackLayout>
+
+    </StackLayout>
+</ContentPage>

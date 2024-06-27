@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Zebra_RFID_Scanner_Android.Views.GetFilePage"
+             xmlns:vm="clr-namespace:Zebra_RFID_Scanner_Android.ViewModels"
+             xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
+             Title="{Binding Title}"
+             BindingContext="{vm:GetFileViewModel}">
+    <StackLayout Margin="20">
+        <Label Text="Enter Information" FontSize="Large" HorizontalOptions="Center" Margin="0,20,0,10"  />
+
+        <!-- Trường nhập chuỗi -->
+        <Entry Placeholder="Enter Port_Code" x:Name="stringEntry" Margin="0,0,0,10" Text="{Binding PortCode}" />
+
+        <!-- Trường nhập ngày -->
+        <DatePicker x:Name="datePicker" Margin="0,0,0,10" Date="{Binding Date, Mode=TwoWay}"/>
+
+        <!-- Nút Gửi -->
+        <Button Text="Send" Command="{Binding GetFileClicked}" HorizontalOptions="FillAndExpand" Margin="0,10,0,0" />
+    </StackLayout>
+
+</ContentPage>

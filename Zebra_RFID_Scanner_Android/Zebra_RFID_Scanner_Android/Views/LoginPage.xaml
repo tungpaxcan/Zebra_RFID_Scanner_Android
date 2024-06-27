@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="Zebra_RFID_Scanner_Android.Views.LoginPage"
+             Shell.NavBarIsVisible="False">
+    <StackLayout BackgroundColor="#e6e6e6">
+        <Grid>
+            <StackLayout Padding="0" Margin="0" HorizontalOptions="FillAndExpand">
+                <Frame HeightRequest="150" BackgroundColor="Blue" Padding="0" Margin="0">
+                    <Image Source="bg_1.png" Aspect="AspectFill" Margin="0"/>
+                </Frame>
+            </StackLayout>
+            <StackLayout Padding="0" Margin="10,100,10,0" HorizontalOptions="FillAndExpand">
+                <Frame  BackgroundColor="White" HeightRequest="500" HasShadow="True" Padding="0" Margin="0">
+                    <StackLayout>
+                        <StackLayout Margin="10">
+                            <Label Text="SIGN IN" TextColor="Black" HorizontalOptions="CenterAndExpand" FontAttributes="Bold"/>
+                        </StackLayout>
+                        <StackLayout Padding="0" Margin="15,10">
+                            <Entry Placeholder="Username" Text="{Binding Username}" />
+                            <Entry Placeholder="Password" IsPassword="True" Text="{Binding Password}" />
+                            <StackLayout  Orientation="Horizontal">
+                                <Label Text="Forgot Password" TextColor="Blue" FontAttributes="Bold" HorizontalOptions="EndAndExpand" FontSize="Small" VerticalTextAlignment="Center" HorizontalTextAlignment="Center">
+                                    <Label.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding ForgotPasswordCommand}" />
+                                    </Label.GestureRecognizers>
+                                </Label>
+                            </StackLayout>
+                            <Button Text="SIGN IN"  Command="{Binding LoginCommand}" IsEnabled="{Binding IsValidLogin}" BackgroundColor="Blue" TextColor="White" CornerRadius="30" />
+                        </StackLayout>
+                    </StackLayout>
+                </Frame>
+            </StackLayout>
+        </Grid>
+    </StackLayout>
+</ContentPage>

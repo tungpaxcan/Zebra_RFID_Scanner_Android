@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Zebra_RFID_Scanner_Android.Views.ModalCheckCarton"
+             Title="a">
+    
+    <StackLayout Padding="5" VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand">
+        <Label Text="READ DATA" HorizontalOptions="Center" FontSize="Large" Margin="0,5,0,0" />
+        <ScrollView Orientation="Both">
+            <Grid BackgroundColor="White" RowSpacing="0"  >
+                <Grid.RowDefinitions >
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions >
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Label Text="CTN" Grid.Row="0" Grid.Column="0" HorizontalOptions="StartAndExpand"/>
+                <Label Text="PO" Grid.Row="0" Grid.Column="1" HorizontalOptions="CenterAndExpand"/>
+                <Label Text="Status" Grid.Row="0" Grid.Column="2" HorizontalOptions="EndAndExpand"/>
+                <ListView x:Name="excelListView" Grid.Row="1" Grid.ColumnSpan="3" ItemsSource="{Binding CartonRows}" HasUnevenRows="True">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <ViewCell.View>
+                                    <Frame BackgroundColor="{Binding Color}" Padding="5">
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Text="{Binding CartonTo}" HorizontalOptions="StartAndExpand" />
+                                            <Label Text="{Binding PO}" HorizontalOptions="CenterAndExpand" />
+                                            <Label Text="{Binding StatusCtn}" HorizontalOptions="CenterAndExpand" />
+                                        </StackLayout>
+                                    </Frame>
+                                </ViewCell.View>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <BoxView Color="Gray" Grid.Row="1" Grid.ColumnSpan="3" HeightRequest="3" HorizontalOptions="FillAndExpand" VerticalOptions="Start" />
+            </Grid>
+        </ScrollView>
+        <Label Text="Please confirm the action" 
+                   FontSize="Medium" 
+                   HorizontalOptions="Center" 
+                   VerticalOptions="CenterAndExpand" />
+            <Button Text="OK" 
+                    Clicked="OnOkButtonClicked"
+                    HorizontalOptions="Center" 
+                    VerticalOptions="End" />
+     </StackLayout>
+</ContentPage>
