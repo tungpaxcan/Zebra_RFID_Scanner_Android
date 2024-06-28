@@ -81,7 +81,7 @@
     <FlyoutItem Title="List PKL" Icon="icon_feed.png">
         <ShellContent Route="AboutPage" ContentTemplate="{DataTemplate local:AboutPage}" />
     </FlyoutItem>
-    <FlyoutItem Title="Get File" Icon="icon_feed.png">
+    <FlyoutItem Title="Get File" Icon="ic_shortcut_file_download.png">
         <ShellContent Route="GetFilePage"  ContentTemplate="{DataTemplate local:GetFilePage}" />
     </FlyoutItem>
     <MenuItem Text="Get File" StyleClass="MenuItemLayoutStyle" IconImageSource="ic_shortcut_file_download.png" Clicked="OnGetFileClick">

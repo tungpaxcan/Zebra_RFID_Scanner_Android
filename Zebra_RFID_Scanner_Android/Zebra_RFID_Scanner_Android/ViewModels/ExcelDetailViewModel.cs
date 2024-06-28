@@ -256,7 +256,7 @@ namespace Zebra_RFID_Scanner_Android.ViewModels
                         checkEPCDiscrepancys = ePCDiscrepancys?.FirstOrDefault(x => x.Id == epc);
                         if (checkEPCDiscrepancys != null)
                         {
-                            checkFileFormat = ExcelRowShow?.FirstOrDefault(x => x.CartonTo.Trim() == checkEPCDiscrepancys.Carton.Trim());
+                            checkFileFormat = ExcelRowShow?.FirstOrDefault(x => x.CartonTo.Trim() == checkEPCDiscrepancys.Carton.Trim() && x.PO.Trim() == checkEPCDiscrepancys.Po.Trim());
                         }
                         else
                         {
@@ -701,14 +701,14 @@ namespace Zebra_RFID_Scanner_Android.ViewModels
             {
                 UserDialogs.Instance.ShowLoading("Loading...");
                 _hostData = DependencyService.Get<IHostData>();
-                string apiRequest = !TypeStatus ? $"{_hostData.HostDatas}/Home/Save" : $"{_hostData.HostDatas}/Home/EditAll";
+                string apiRequest = $"{_hostData.HostDatas}/Home/EditAll";
                 var id = Url.Replace(EXTENSIONXLSX, "").Replace(EXTENSIONCSV, "");
                 string TimeStart = Startime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
                 ExcelRowShow = new ObservableCollection<File.FileFormat>(ExcelRowShow.Where(x => int.Parse(x.Qty) >= 0).ToList());
                 var ctnErrors = new ObservableCollection<File.FileFormat>(ExcelRow
                                 .Where(row => !ExcelRowShow.Any(show => show.CartonTo == row.CartonTo))
                                .ToList());
-                var responseObject = JsonConvert.DeserializeObject<YourResponseObject>(await _pklApi.SaveDataAsync(apiRequest, TypeStatus, id, ExcelRowShow, ctnErrors, EpcReports, Po.TrimEnd('-'), So.TrimEnd('-'), Sku.TrimEnd('-'), "[]", Consignee, Shipper, TimeStart, ePCDiscrepancys));
+                var responseObject = JsonConvert.DeserializeObject<YourResponseObject>(await _pklApi.SaveDataAsync(apiRequest, true, id, ExcelRowShow, ctnErrors, EpcReports, Po.TrimEnd('-'), So.TrimEnd('-'), Sku.TrimEnd('-'), "[]", Consignee, Shipper, TimeStart, ePCDiscrepancys));
                 if (responseObject.Code is string)
                 {
                     string codeAsString = (string)responseObject.Code;
@@ -720,7 +720,7 @@ namespace Zebra_RFID_Scanner_Android.ViewModels
                     if (codeAsInt == 200)
                     {
                         Toast.MakeText(Android.App.Application.Context, responseObject.msg, ToastLength.Short).Show();
-                        await Shell.Current.GoToAsync($"//{nameof(AboutPage)}");
+                        await Shell.Current.GoToAsync($"//{nameof(GetFilePage)}");
                     }
                     else
                     {

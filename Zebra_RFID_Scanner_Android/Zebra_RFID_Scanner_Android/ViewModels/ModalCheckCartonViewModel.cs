@@ -66,58 +66,7 @@ namespace Zebra_RFID_Scanner_Android.ViewModels
                 }
                 else
                 {
-                    // Tạo yêu cầu GET đến URL của tệp Excel
-                    var request = new HttpRequestMessage(HttpMethod.Get, $"{_hostData.HostDatas}/PreASN/" + Url);
-
-                    // Gửi yêu cầu và nhận phản hồi
-                    var response = await client.SendAsync(request);
-
-                    // Kiểm tra xem phản hồi có thành công không
-                    if (response.IsSuccessStatusCode)
-                    {
-                        // Đọc dữ liệu từ phản hồi
-                        using (var stream = await response.Content.ReadAsStreamAsync())
-                        {
-                            int processedLines = 0;
-
-
-                            using (StreamReader reader = new StreamReader(stream))
-                            {
-                                string line;
-                                while ((line = await reader.ReadLineAsync()) != null)
-                                {
-                                    processedLines++;
-                                    string[] columns = line.Split(',');
-                                    if (columns[0]?.Trim() == "doNo") continue;
-
-                                    var ePCDiscrepancys = new File.EPCDiscrepancys
-                                    {
-                                        Carton = columns[6]?.Trim(),
-                                        Po = columns[15]?.Trim(),
-                                        SKU = columns[16]?.Trim(),
-                                        So = columns[14]?.Trim(),
-                                        UPC = columns[17]?.Trim(),
-                                        cntry = columns[10]?.Trim(),
-                                        port = columns[9]?.Trim(),
-                                        doNo = columns[0]?.Trim(),
-                                        setCd = columns[5]?.Trim(),
-                                        mngFctryCd = columns[2]?.Trim(),
-                                        facBranchCd = columns[3]?.Trim(),
-                                        subDoNo = columns[1]?.Trim(),
-                                        packKey = columns[12]?.Trim(),
-                                        Id = columns[13]?.Trim()
-                                    };
-                                    await CreateListCSV(ePCDiscrepancys);
-                                }
-                            }
-                          
-                        }
-                    }
-                    else
-                    {
-                        throw new Exception("Failed to retrieve Excel file. Status code: " + response.StatusCode);
-                    }
-                    // Close the modal page after processing
+                    await FetchDataAsync(1, Url, PO);
                 }
             }
             catch (System.Exception ex)
@@ -288,7 +237,7 @@ namespace Zebra_RFID_Scanner_Android.ViewModels
                 }
                 using (HttpClient client = new HttpClient())
                 {
-                    var request = new HttpRequestMessage(HttpMethod.Get, $"{_hostData.HostDatas}/ReportsUNIQLO/InfoCtn?id={id}&page={page}&po={{po}}\"");
+                    var request = new HttpRequestMessage(HttpMethod.Get, $"{_hostData.HostDatas}/ReportsUNIQLO/InfoCtn?id={id}&page={page}&po={po}");
                     request.Headers.Add("Cookie", "ASP.NET_SessionId=" + sessionId + "");
                     // Gửi yêu cầu và nhận phản hồi
                     var response = await client.SendAsync(request);
