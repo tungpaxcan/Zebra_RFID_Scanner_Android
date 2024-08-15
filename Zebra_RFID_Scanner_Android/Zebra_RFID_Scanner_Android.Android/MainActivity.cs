@@ -13,6 +13,8 @@ using AndroidX.Lifecycle;
 using Acr.UserDialogs;
 using Android.Widget;
 using Zebra_RFID_Scanner_Android.Views;
+using WebSocket4Net;
+using System.Text;
 
 namespace Zebra_RFID_Scanner_Android.Droid
 {
@@ -25,6 +27,7 @@ namespace Zebra_RFID_Scanner_Android.Droid
         private ModalCheckCartonViewModel _viewModel;
         private IHostData host;
         private IModalPage modalPage;
+        private WebSocket _webSocket;
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -61,6 +64,25 @@ namespace Zebra_RFID_Scanner_Android.Droid
          
             _viewModel = ViewModelLocator.ModalCheckCartonViewModel;
             DWUtilities.CreateDWProfile(this);
+            // Khởi tạo và kết nối WebSocket
+            InitializeWebSocket();
+        }
+        private void InitializeWebSocket()
+        {
+            _webSocket = new WebSocket("ws://192.168.1.102/ws");
+
+            _webSocket.Opened += (sender, e) => Console.WriteLine("Opened connection ád");
+            _webSocket.DataReceived += (sender, e) =>
+            {
+                // Chuyển đổi mảng byte thành chuỗi
+                string receivedData = Encoding.UTF8.GetString(e.Data);
+                Console.WriteLine("Received data ad: " + receivedData);
+            };
+            _webSocket.MessageReceived += (sender, e) => Console.WriteLine("Received ád: " + e.Message );
+            _webSocket.Error += (sender, e) => Console.WriteLine("Error áda: " + e.Exception.Message);
+            _webSocket.Closed += (sender, e) => Console.WriteLine("### closed ád ###");
+
+            _webSocket.Open();
         }
         protected override void OnNewIntent(Intent intent)
         {
@@ -79,6 +101,15 @@ namespace Zebra_RFID_Scanner_Android.Droid
                 _viewModel.ProcessIntentData(decodedData);
             }
             Console.WriteLine(decodedData);
+        }
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            // Đóng kết nối WebSocket khi Activity bị hủy
+            if (_webSocket != null && _webSocket.State == WebSocketState.Open)
+            {
+                _webSocket.Close();
+            }
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {

@@ -20,7 +20,7 @@
             </ToolbarItem.IconImageSource>
         </ToolbarItem>
     </TabbedPage.ToolbarItems>
-    <ContentPage Title="List PKL" IconImageSource="ic_list.png">
+    <ContentPage Title="{Binding TextCol1}" IconImageSource="ic_list.png">
         <ContentPage.Content>
             <Grid>
                 <Grid.RowDefinitions>
@@ -62,7 +62,7 @@
         </ContentPage.Content>
     </ContentPage>
     <!-- Tab 2 -->
-    <ContentPage Title="Scanned List" IconImageSource="ic_playlist_add_check.png">
+    <ContentPage Title="{Binding TextCol2}" IconImageSource="ic_playlist_add_check.png">
         <ContentPage.Content>
             <Grid>
                 <Grid.RowDefinitions>

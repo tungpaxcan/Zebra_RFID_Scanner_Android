@@ -12,11 +12,13 @@ namespace Zebra_RFID_Scanner_Android.Models
         {
             public event PropertyChangedEventHandler PropertyChanged;
             public string CartonTo { get; set; }
+            public string IdReports { get; set; }
             public string PO { get; set; }
             public string Sku { get; set; }
             public string cntry { get; set; }
             public string port { get; set; }
             public string deviceNum { get; set; }
+            public string deviceNumClient { get; set; }
             public string doNo { get; set; }
             public string setCd { get; set; }
             public string subDoNo { get; set; }
@@ -81,6 +83,19 @@ namespace Zebra_RFID_Scanner_Android.Models
                     }
                 }
             }
+            private string location;
+            public string Location
+            {
+                get { return location; }
+                set
+                {
+                    if (location != value)
+                    {
+                        location = value;
+                        OnPropertyChanged(nameof(Location));
+                    }
+                }
+            }
             public Color color;
             public Color Color {
                 get { return color; }
@@ -93,7 +108,19 @@ namespace Zebra_RFID_Scanner_Android.Models
                     }
                 }
             }
-
+            public Color colorCtn;
+            public Color ColorCtn
+            {
+                get { return colorCtn; }
+                set
+                {
+                    if (colorCtn != value)
+                    {
+                        colorCtn = value;
+                        OnPropertyChanged(nameof(ColorCtn));
+                    }
+                }
+            }
             protected virtual void OnPropertyChanged(string propertyName)
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -112,6 +139,7 @@ namespace Zebra_RFID_Scanner_Android.Models
             public string cntry { get; set; }
             public string port { get; set; }
             public string deviceNum { get; set; }
+            public string deviceNumClient { get; set; }
             public string subDoNo { get; set; }
             public string doNo { get; set; }
             public string setCd { get; set; }
@@ -122,6 +150,8 @@ namespace Zebra_RFID_Scanner_Android.Models
         public class EPCDiscrepancys : INotifyPropertyChanged
         {
             public event PropertyChangedEventHandler PropertyChanged;
+            public string Consignee { get; set; }
+            public string Shipper { get; set; }
             public string Id { get; set; }
             public string IdReports { get; set; }
             public string Po { get; set; }
@@ -138,6 +168,8 @@ namespace Zebra_RFID_Scanner_Android.Models
             public string subDoNo { get; set; }
             public string mngFctryCd { get; set; }
             public string facBranchCd { get; set; }
+            public string location { get; set; }
+            public bool statusClient { get; set; }
         }
         public class InfoCtn
         {
@@ -164,6 +196,7 @@ namespace Zebra_RFID_Scanner_Android.Models
             public int id { get; set; }
             public string ctn { get; set; }
             public string status { get; set; }
+            public bool statusClient { get; set; }
             public string upc { get; set; }
             public string qty { get; set; }
         }
@@ -184,6 +217,7 @@ namespace Zebra_RFID_Scanner_Android.Models
             public string mngFctryCd { get; set; }
             public string facBranchCd { get; set; }
             public string packKey { get; set; }
+            public bool statusClient { get; set; }
         }
     }
 }

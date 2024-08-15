@@ -21,6 +21,7 @@ namespace Zebra_RFID_Scanner_Android
 
             DependencyService.Register<MockDataStore>();
             DependencyService.Register<AuthenticationService>();
+            DependencyService.Register<Site>();
             MainPage = new AppShell();
             //MainPage.BindingContext = new LoginViewModel();
         }
@@ -29,7 +30,7 @@ namespace Zebra_RFID_Scanner_Android
 
             if (Preferences.Get("isLoggedIn", true))
             {
-                await Shell.Current.GoToAsync($"//{nameof(GetFilePage)}");
+                await Shell.Current.GoToAsync($"//{nameof(AboutPage)}");
             }
             else
             {

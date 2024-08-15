@@ -1,6 +1,7 @@
 ﻿using Acr.UserDialogs;
 using Android;
 using Android.Widget;
+using Java.Net;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -22,11 +23,10 @@ namespace Zebra_RFID_Scanner_Android.ViewModels
 {
     public class LoginViewModel : BaseViewModel
     {
-
-        
         private string username;
         private string password;
         private IAuthenticationService _authenticationService;
+        private Services.ISite _site;
         private IHostData _hostData;
        
         public string Username
@@ -80,6 +80,7 @@ namespace Zebra_RFID_Scanner_Android.ViewModels
             {
                 UserDialogs.Instance.ShowLoading("Loading...");
                 _authenticationService = DependencyService.Get<IAuthenticationService>();
+                _site = DependencyService.Get<Services.ISite>();
                 _hostData = DependencyService.Get<IHostData>();
                 using (HttpClient client = new HttpClient())
                 {
@@ -109,7 +110,8 @@ namespace Zebra_RFID_Scanner_Android.ViewModels
                             if (Shell.Current != null)
                             {
                                 Preferences.Set("isLoggedIn", true);
-                                await Shell.Current.GoToAsync($"//{nameof(GetFilePage)}");
+                                _site.Sites = responseObject.site;
+                                await Shell.Current.GoToAsync($"//{nameof(AboutPage)}");
                             }
                             else
                             {
@@ -150,36 +152,6 @@ namespace Zebra_RFID_Scanner_Android.ViewModels
             };
       
         //
-        public async Task<Location> GetCurrentLocationAsync()
-        {
-            try
-            {
-                var request = new GeolocationRequest(GeolocationAccuracy.Medium);
-                var location = await Geolocation.GetLocationAsync(request);
-
-                if (location != null)
-                {
-                    return location;
-                }
-            }
-            catch (FeatureNotSupportedException fnsEx)
-            {
-                // Xử lý khi tính năng không được hỗ trợ trên thiết bị
-            }
-            catch (FeatureNotEnabledException fneEx)
-            {
-                // Xử lý khi tính năng chưa được bật
-            }
-            catch (PermissionException pEx)
-            {
-                // Xử lý khi không có quyền truy cập vị trí
-            }
-            catch (Exception ex)
-            {
-                // Xử lý các lỗi khác
-            }
-
-            return null;
-        }
+      
     }
 }

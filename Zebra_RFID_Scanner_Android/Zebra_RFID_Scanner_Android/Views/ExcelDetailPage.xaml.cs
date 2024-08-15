@@ -56,7 +56,7 @@ namespace Zebra_RFID_Scanner_Android.Views
                 {
                     if (!IsFistOpenModal)
                     {
-                        await ShowModalCheckCartonAsync(viewModel.Url, viewmodel.PO,viewModel.TypeStatus);
+                        await ShowModalCheckCartonAsync(viewModel.Url, viewModel.PO,viewModel.TypeStatus);
                     }
                 }
                 catch (Exception ex)

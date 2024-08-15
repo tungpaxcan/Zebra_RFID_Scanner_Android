@@ -18,17 +18,17 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <Label Text="CTN" Grid.Row="0" Grid.Column="0" HorizontalOptions="StartAndExpand"/>
-                <Label Text="PO" Grid.Row="0" Grid.Column="1" HorizontalOptions="CenterAndExpand"/>
+                <Label Text="UPC" Grid.Row="0" Grid.Column="1" HorizontalOptions="CenterAndExpand"/>
                 <Label Text="Status" Grid.Row="0" Grid.Column="2" HorizontalOptions="EndAndExpand"/>
                 <ListView x:Name="excelListView" Grid.Row="1" Grid.ColumnSpan="3" ItemsSource="{Binding CartonRows}" HasUnevenRows="True">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
                                 <ViewCell.View>
-                                    <Frame BackgroundColor="{Binding Color}" Padding="5">
+                                    <Frame BackgroundColor="{Binding ColorCtn}" Padding="5">
                                         <StackLayout Orientation="Horizontal">
                                             <Label Text="{Binding CartonTo}" HorizontalOptions="StartAndExpand" />
-                                            <Label Text="{Binding PO}" HorizontalOptions="CenterAndExpand" />
+                                            <Label Text="{Binding UPC}" HorizontalOptions="CenterAndExpand" />
                                             <Label Text="{Binding StatusCtn}" HorizontalOptions="CenterAndExpand" />
                                         </StackLayout>
                                     </Frame>
@@ -40,13 +40,22 @@
                 <BoxView Color="Gray" Grid.Row="1" Grid.ColumnSpan="3" HeightRequest="3" HorizontalOptions="FillAndExpand" VerticalOptions="Start" />
             </Grid>
         </ScrollView>
+        <Button Text="Skip Scan" 
+                 Command="{Binding SkipScanCommand}"
+                  HorizontalOptions="Center" 
+                  VerticalOptions="End" />
         <Label Text="Please confirm the action" 
                    FontSize="Medium" 
                    HorizontalOptions="Center" 
                    VerticalOptions="CenterAndExpand" />
-            <Button Text="OK" 
+        <Label Text="{Binding Count, StringFormat='Scanned Count: {0}'}" 
+               FontSize="Medium" 
+               HorizontalOptions="Center" 
+               VerticalOptions="CenterAndExpand" />
+        <Button Text="OK" 
                     Clicked="OnOkButtonClicked"
                     HorizontalOptions="Center" 
                     VerticalOptions="End" />
-     </StackLayout>
+        
+    </StackLayout>
 </ContentPage>

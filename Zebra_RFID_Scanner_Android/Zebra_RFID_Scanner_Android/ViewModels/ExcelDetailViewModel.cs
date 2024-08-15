@@ -43,6 +43,7 @@ namespace Zebra_RFID_Scanner_Android.ViewModels
         private readonly PKLApi _pklApi;
         public Command SaveDataClicked { get; }
         private readonly IAuthenticationService _authenticationService;
+        private readonly Services.ISite _site;
         //a
         private static TagItem _mySelectedItem;
         private static Dictionary<String, int> tagListDict = new Dictionary<string, int>();//khai báo khóa-giá trị TagID-sl
@@ -162,9 +163,20 @@ namespace Zebra_RFID_Scanner_Android.ViewModels
                 OnPropertyChanged(nameof(Text));
             }
         }
+        private string lc;
+        public string LC
+        {
+            get => lc;
+            set
+            {
+                lc = value;
+                OnPropertyChanged(nameof(LC));
+            }
+        }
         public ExcelDetailViewModel()
         {
             _authenticationService = DependencyService.Get<IAuthenticationService>();
+            _site = DependencyService.Get<Services.ISite>();
             if (_authenticationService == null || string.IsNullOrEmpty(_authenticationService.SessionId))
             {
                 Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
@@ -183,6 +195,7 @@ namespace Zebra_RFID_Scanner_Android.ViewModels
             TotalTags = "0";
             TotalTime = DateTime.ParseExact("00:00:00", "HH:mm:ss", CultureInfo.InvariantCulture).ToString("HH\\:mm\\:ss");
             ExcelRowShow = new ObservableCollection<File.FileFormat>();
+          
             // UI for hint
             updateHints();
             Title = Url;
@@ -272,6 +285,7 @@ namespace Zebra_RFID_Scanner_Android.ViewModels
                 }
                 if (checkFileFormat != null)
                 {
+                    checkFileFormat.Location = LC;
                     checkFileFormat.qtyscan = (int.Parse(checkFileFormat.qtyscan) + 1).ToString();
                     if (checkFileFormat.Qty != ERROL_QTY)
                     {
@@ -298,7 +312,7 @@ namespace Zebra_RFID_Scanner_Android.ViewModels
                             Po = checkEPCDiscrepancys.Po,
                             SKU = checkEPCDiscrepancys.SKU,
                             So = checkEPCDiscrepancys.So,
-                            UPC = upc,
+                            UPC = checkEPCDiscrepancys.UPC,
                             CartonTo = checkEPCDiscrepancys.Carton,
                             cntry = checkEPCDiscrepancys.cntry,
                             port = checkEPCDiscrepancys.port,
@@ -490,19 +504,13 @@ namespace Zebra_RFID_Scanner_Android.ViewModels
             try
             {
                 UserDialogs.Instance.ShowLoading("Loading...");
+                Location location = await GetCurrentLocationAsync();
+                LC = location.Latitude + ", " + location.Longitude;
                 _hostData = DependencyService.Get<IHostData>();
                 modalPage = DependencyService.Get<IModalPage>();
                 modalPage.modalPage = false;
                 ExcelRowShow.Clear();
                 var client = new HttpClient();
-
-                //if (TypeStatus)
-                //{
-                //    await FetchDataAsync(1);
-                //}
-                //else
-                //{
-
                     listCsv = false;
                     listExcel = true;
                     var distinctSoValues = cartonRows.Select(cr => cr.So).Distinct();
@@ -547,92 +555,6 @@ namespace Zebra_RFID_Scanner_Android.ViewModels
                         OnPropertyChanged(nameof(_listAvailable));
                        
                     }
-                
-           
-                // Tạo yêu cầu GET đến URL của tệp Excel
-                //var request = new HttpRequestMessage(HttpMethod.Get, $"{_hostData.HostDatas}/PreASN/" + Url);
-
-                //// Gửi yêu cầu và nhận phản hồi
-                //var response = await client.SendAsync(request);
-
-                //// Kiểm tra xem phản hồi có thành công không
-                //if (response.IsSuccessStatusCode)
-                //{
-                //    // Đọc dữ liệu từ phản hồi
-                //    using (var stream = await response.Content.ReadAsStreamAsync())
-                //    {
-                //        if (Url.Contains(EXTENSIONCSV))
-                //        {
-                //            listCsv = false;
-                //            listExcel = true;
-                //            using (System.IO.StreamReader sr = new System.IO.StreamReader(stream))
-                //            {
-                //                string line;
-                //                while ((line = sr.ReadLine()) != null)
-                //                {
-                //                    string[] columns = line.Split(','); // Phân tách các cột bằng dấu phẩy
-                //                    Shipper = columns[4]?.Trim();
-                //                    if (columns[0]?.Trim() == "doNo") continue;
-                //                    // Các cột được truy cập bằng chỉ số trong mảng columns
-
-                //                    //var CartonToE = columns[6]?.Trim(); // Điều chỉnh chỉ số nếu cần thiết
-                //                    //var POE = columns[15]?.Trim();
-                //                    //var SkuE = columns[16]?.Trim();
-                //                    //var SoE = columns[14]?.Trim();
-                //                    //var upcE = columns[17]?.Trim();
-                //                    //var cntryE = columns[10]?.Trim();
-                //                    //var portE = columns[9]?.Trim();
-                //                    //var doNoE = columns[0]?.Trim();
-                //                    //var setCdE = columns[5]?.Trim();
-                //                    //var subDoNoE = columns[1]?.Trim();
-                //                    //var packKeyE = columns[12]?.Trim();
-                //                    //var mngFctryCdE = columns[2]?.Trim();
-                //                    //var facBranchCdE = columns[3]?.Trim();
-                //                    //var EpcE = columns[13]?.Trim();
-
-                //                    CreateListCSV(CartonToE, EpcE, POE, SkuE, SoE, upcE, cntryE,
-                //                    portE, doNoE, setCdE, subDoNoE, mngFctryCdE, facBranchCdE, packKeyE);
-                //                    // Tiếp tục xử lý dữ liệu như làm trong đoạn mã Excel trước đó
-                //                }
-                //                Startime = DateTime.Now;
-                //            }
-
-                //        }
-                //        else
-                //        {
-                //            listCsv = true;
-                //            listExcel = false;
-                //            using (var package = new ExcelPackage(stream))
-                //            {
-                //                ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
-                //                // Lấy sheet đầu tiên từ tệp Excel
-                //                var worksheet = package.Workbook.Worksheets[0];
-                //                Consignee = worksheet.Cells[2, 1].Value?.ToString();
-                //                Shipper = worksheet.Cells[2, 2].Value?.ToString();
-                //                var rowCount = worksheet.Dimension.End.Row;
-
-                //                for (int row = 2; row <= rowCount; row++)
-                //                {
-                //                    var CartonToE = worksheet.Cells[row, 6].Value?.ToString().Trim();
-                //                    var POE = worksheet.Cells[row, 4].Value?.ToString().Trim();
-                //                    var SkuE = worksheet.Cells[row, 5].Value?.ToString().Trim();
-                //                    var SoE = worksheet.Cells[row, 3].Value?.ToString().Trim();
-                //                    var upcE = worksheet.Cells[row, 8].Value?.ToString().Trim();
-                //                    var qtyE = worksheet.Cells[row, 9].Value?.ToString().Trim();
-
-                //                  await  CreateListXLSX(CartonToE, POE, SkuE, SoE, upcE, qtyE);
-                //                }
-
-                //                Startime = DateTime.Now;
-                //            }
-                //        }
-                //    }
-                //}
-                //else
-                //{
-                //    throw new Exception("Failed to retrieve Excel file. Status code: " + response.StatusCode);
-                //}
-                //}
             }
             catch (System.Exception ex)
             {
@@ -701,14 +623,16 @@ namespace Zebra_RFID_Scanner_Android.ViewModels
             {
                 UserDialogs.Instance.ShowLoading("Loading...");
                 _hostData = DependencyService.Get<IHostData>();
-                string apiRequest = $"{_hostData.HostDatas}/Home/EditAll";
+                string apiMaersk = !typeStatuts ? $"{_hostData.HostDatas}/Home/Save" : $"{_hostData.HostDatas}/Home/EditAll";
+                string apiClient = $"{_hostData.HostDatas}/ClientHandheld/Save";
+                string apiRequest = _site.Sites == "client" ? apiClient : apiMaersk;
                 var id = Url.Replace(EXTENSIONXLSX, "").Replace(EXTENSIONCSV, "");
                 string TimeStart = Startime.ToString("yyyy-MM-ddTHH:mm:ss.fffZ");
                 ExcelRowShow = new ObservableCollection<File.FileFormat>(ExcelRowShow.Where(x => int.Parse(x.Qty) >= 0).ToList());
                 var ctnErrors = new ObservableCollection<File.FileFormat>(ExcelRow
                                 .Where(row => !ExcelRowShow.Any(show => show.CartonTo == row.CartonTo))
                                .ToList());
-                var responseObject = JsonConvert.DeserializeObject<YourResponseObject>(await _pklApi.SaveDataAsync(apiRequest, true, id, ExcelRowShow, ctnErrors, EpcReports, Po.TrimEnd('-'), So.TrimEnd('-'), Sku.TrimEnd('-'), "[]", Consignee, Shipper, TimeStart, ePCDiscrepancys));
+                var responseObject = JsonConvert.DeserializeObject<YourResponseObject>(await _pklApi.SaveDataAsync(apiRequest, typeStatuts, id, ExcelRowShow, ctnErrors, EpcReports, Po.TrimEnd('-'), So.TrimEnd('-'), Sku.TrimEnd('-'), "[]", Consignee, Shipper, TimeStart, ePCDiscrepancys,LC,_site.Sites));
                 if (responseObject.Code is string)
                 {
                     string codeAsString = (string)responseObject.Code;
@@ -720,7 +644,7 @@ namespace Zebra_RFID_Scanner_Android.ViewModels
                     if (codeAsInt == 200)
                     {
                         Toast.MakeText(Android.App.Application.Context, responseObject.msg, ToastLength.Short).Show();
-                        await Shell.Current.GoToAsync($"//{nameof(GetFilePage)}");
+                        await Shell.Current.GoToAsync($"//{nameof(AboutPage)}");
                     }
                     else
                     {
@@ -734,6 +658,37 @@ namespace Zebra_RFID_Scanner_Android.ViewModels
                 Toast.MakeText(Android.App.Application.Context, ex.Message, ToastLength.Short).Show();
             }
             finally { UserDialogs.Instance.HideLoading(); }
+        }
+        public async Task<Location> GetCurrentLocationAsync()
+        {
+            try
+            {
+                var request = new GeolocationRequest(GeolocationAccuracy.Medium);
+                var location = await Geolocation.GetLocationAsync(request);
+
+                if (location != null)
+                {
+                    return location;
+                }
+            }
+            catch (FeatureNotSupportedException fnsEx)
+            {
+                // Xử lý khi tính năng không được hỗ trợ trên thiết bị
+            }
+            catch (FeatureNotEnabledException fneEx)
+            {
+                // Xử lý khi tính năng chưa được bật
+            }
+            catch (PermissionException pEx)
+            {
+                // Xử lý khi không có quyền truy cập vị trí
+            }
+            catch (Exception ex)
+            {
+                // Xử lý các lỗi khác
+            }
+
+            return null;
         }
         //Thông báo cho UI về sự thay đổi của thuộc tính.
         protected new virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

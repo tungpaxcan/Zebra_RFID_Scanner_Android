@@ -24,7 +24,7 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Label Text="CTN" Grid.Row="0" Grid.Column="0" HorizontalOptions="StartAndExpand"/>
-            <Label Text="PO" Grid.Row="0" Grid.Column="1" HorizontalOptions="EndAndExpand"/>
+            <Label Text="Location" Grid.Row="0" Grid.Column="1" HorizontalOptions="CenterAndExpand"/>
             <Label Text="QTY" Grid.Row="0" Grid.Column="2" HorizontalOptions="EndAndExpand"/>
             <Label Text="QTY SCAN" Grid.Row="0" Grid.Column="3" HorizontalOptions="EndAndExpand"/>
             <ListView x:Name="excelListView" Grid.Row="1" Grid.ColumnSpan="4" ItemsSource="{Binding ExcelRowShow}" HasUnevenRows="True">
@@ -35,7 +35,7 @@
                                 <Frame BackgroundColor="{Binding Color}" Padding="5" >
                                     <StackLayout Orientation="Horizontal">
                                         <Label Text="{Binding CartonTo}" HorizontalOptions="StartAndExpand" />
-                                        <Label Text="{Binding PO}" HorizontalOptions="CenterAndExpand" />
+                                        <Label Text="{Binding Location}" HorizontalOptions="CenterAndExpand" />
                                         <Label Text="{Binding Qty}" HorizontalOptions="CenterAndExpand" />
                                         <Label Text="{Binding qtyscan}" HorizontalOptions="EndAndExpand" />
                                     </StackLayout>
@@ -46,7 +46,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            <BoxView Color="Gray" Grid.Row="1" Grid.ColumnSpan="3" HeightRequest="2" HorizontalOptions="FillAndExpand" VerticalOptions="Start" />
+            <BoxView Color="Gray" Grid.Row="1" Grid.ColumnSpan="4" HeightRequest="2" HorizontalOptions="FillAndExpand" VerticalOptions="Start" />
         </Grid>
         <Grid BackgroundColor="White" RowSpacing="0" HeightRequest="150" IsVisible="{Binding listExcel}">
             <Grid.RowDefinitions >

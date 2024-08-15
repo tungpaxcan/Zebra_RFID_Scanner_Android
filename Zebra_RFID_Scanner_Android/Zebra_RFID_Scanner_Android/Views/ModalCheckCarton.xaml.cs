@@ -11,6 +11,7 @@ using Android.Widget;
 using Zebra_RFID_Scanner_Android.Services;
 using System.Collections.ObjectModel;
 using Zebra_RFID_Scanner_Android.Models;
+using System.Windows.Input;
 
 
 namespace Zebra_RFID_Scanner_Android.Views
@@ -26,6 +27,8 @@ namespace Zebra_RFID_Scanner_Android.Views
         public string PO { get => po; set { po = value; OnPropertyChanged(); } }
         private bool typeStatuts = false;
         public bool TypeStatus { get => typeStatuts; set { typeStatuts = value; OnPropertyChanged(); } }
+
+       
         public ModalCheckCarton(string url,string po,bool typeStatuts)
         {
             InitializeComponent();
@@ -33,6 +36,7 @@ namespace Zebra_RFID_Scanner_Android.Views
             TypeStatus = typeStatuts;
             PO = po;
             BindingContext = viewmodel = ViewModelLocator.ModalCheckCartonViewModel;
+
            
         }
         protected override async void OnAppearing()
@@ -65,6 +69,7 @@ namespace Zebra_RFID_Scanner_Android.Views
             OkClicked?.Invoke(this, EventArgs.Empty);
             Navigation.PopModalAsync();
         }
+
         public ObservableCollection<File.FileFormat> GetCartonRows()
         {
             return new ObservableCollection<File.FileFormat>(viewmodel.CartonRows);

@@ -8,6 +8,7 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 using Zebra_RFID_Scanner_Android.Models;
 using Zebra_RFID_Scanner_Android.Services;
 using Zebra_RFID_Scanner_Android.Views;
@@ -17,7 +18,7 @@ namespace Zebra_RFID_Scanner_Android.Api
     public class PKLApi
     {
         private readonly IAuthenticationService _authenticationService;
-
+        public static ReaderModel rfidModel = ReaderModel.readerModel;
         public PKLApi(IAuthenticationService authenticationService)
         {
             _authenticationService = authenticationService;
@@ -35,7 +36,7 @@ namespace Zebra_RFID_Scanner_Android.Api
                 {
                     await Shell.Current.GoToAsync($"//{nameof(LoginPage)}");
                 }
-
+                Console.WriteLine(await response.Content.ReadAsStringAsync());
                 return await response.Content.ReadAsStringAsync();
             }
         }
@@ -60,31 +61,48 @@ namespace Zebra_RFID_Scanner_Android.Api
             }
         }
         public async Task<string> SaveDataAsync(string apiUrl,bool TypeStatus, string idReports, ObservableCollection<File.FileFormat> Ctn, ObservableCollection<File.FileFormat> ctnError, ObservableCollection<File.EpcReport> epcToUpc, string Po, string So, string Sku,
-        string info, string Consignee, string Shipper, string TimeStart, ObservableCollection<File.EPCDiscrepancys> ePCDiscrepancys)
+        string info, string Consignee, string Shipper, string TimeStart, ObservableCollection<File.EPCDiscrepancys> ePCDiscrepancys,string location,string site)
         {
             try
             {
                 string sessionId = _authenticationService.SessionId;
+                if(site != "maersk")
+                {
+                    epcToUpc.ForEach(x =>
+                    {
+                        x.deviceNumClient = rfidModel.rfidReader.HostName.ToString();
+                    });
+                    Ctn.ForEach(x =>
+                    {
+                        x.deviceNumClient = rfidModel.rfidReader.HostName.ToString();
+                        x.IdReports = idReports;
+                    });
+                }
                 using (HttpClient client = new HttpClient())
                 {
                     var request = new HttpRequestMessage(HttpMethod.Post, apiUrl);
                     request.Headers.Add("Cookie", "ASP.NET_SessionId="+sessionId+"");
                     var content = new MultipartFormDataContent();
+                    if(site == "maersk") {
+                        if (!TypeStatus)
+                        {
+                            content.Add(new StringContent(JsonConvert.SerializeObject(ctnError)), "ctnError");
+                            content.Add(new StringContent(Consignee), "Consignee");
+                            content.Add(new StringContent(Shipper), "Shipper");
+                            content.Add(new StringContent(TimeStart), "TimeStart");
+                            content.Add(new StringContent(JsonConvert.SerializeObject(ePCDiscrepancys)), "EPCDiscrepancy");
+                        }
+                        content.Add(new StringContent(Po), "Po");
+                        content.Add(new StringContent(So), "So");
+                        content.Add(new StringContent(Sku), "Sku");
+                        content.Add(new StringContent("[]"), "info");
+                    }
                     content.Add(new StringContent(idReports), "idReports");
                     content.Add(new StringContent(JsonConvert.SerializeObject(Ctn)), "Ctn");
-                    if (!TypeStatus)
-                    {
-                        content.Add(new StringContent(JsonConvert.SerializeObject(ctnError)), "ctnError");
-                        content.Add(new StringContent(Consignee), "Consignee");
-                        content.Add(new StringContent(Shipper), "Shipper");
-                        content.Add(new StringContent(TimeStart), "TimeStart");
-                        content.Add(new StringContent(JsonConvert.SerializeObject(ePCDiscrepancys)), "EPCDiscrepancy");
-                    }
+                  
                     content.Add(new StringContent(JsonConvert.SerializeObject(epcToUpc)), "epcToUpc");
-                    content.Add(new StringContent(Po), "Po");
-                    content.Add(new StringContent(So), "So");
-                    content.Add(new StringContent(Sku), "Sku");
-                    content.Add(new StringContent("[]"), "info");
+                
+                    content.Add(new StringContent(location), "location");
                     request.Content = content;
                     var response = await client.SendAsync(request);
                     response.EnsureSuccessStatusCode();

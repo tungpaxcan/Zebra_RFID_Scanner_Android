@@ -117,7 +117,18 @@ namespace Zebra_RFID_Scanner_Android.ViewModels
             get { return title; }
             set { SetProperty(ref title, value); }
         }
-
+        string textCol1 = string.Empty;
+        public string TextCol1
+        {
+            get { return textCol1; }
+            set { SetProperty(ref textCol1, value); }
+        }
+        string textCol2 = string.Empty;
+        public string TextCol2
+        {
+            get { return textCol2; }
+            set { SetProperty(ref textCol2, value); }
+        }
         protected bool SetProperty<T>(ref T backingStore, T value,
             [CallerMemberName] string propertyName = "",
             Action onChanged = null)

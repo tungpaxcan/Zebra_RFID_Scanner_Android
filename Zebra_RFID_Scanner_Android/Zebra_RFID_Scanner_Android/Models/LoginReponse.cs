@@ -11,6 +11,7 @@ namespace Zebra_RFID_Scanner_Android.Models
             public int code { get; set; }
             public string Url { get; set; }
             public string msg { get; set; }
+            public string site { get; set; }
         }
     }
 }
